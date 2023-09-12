@@ -131,25 +131,18 @@ const page = () => {
   };
 
   const [formFields, setFormFields] = useState([
-    { id: "projectTitle", label: "Project Title", isOpen: false },
-    { id: "projectDescription", label: "Project Description", isOpen: false },
-    { id: "tableOfContents", label: "Table of Contents", isOpen: false },
-    {
-      id: "installInstructions",
-      label: "How to Install and Run the Project",
-      isOpen: false,
-    },
-    { id: "howToUse", label: "How to Use the Project", isOpen: false },
-    { id: "credits", label: "Include Credits", isOpen: false },
-    { id: "liveProjectLink", label: "Live Project Link", isOpen: false },
-    { id: "imageUpload", label: "Upload Images", isOpen: false },
-    { id: "contributorName", label: "Contributor Name", isOpen: false },
-    {
-      id: "contributorGitHub",
-      label: "Contributor GitHub Profile",
-      isOpen: false,
-    },
+    { id: 'projectTitle', label: 'Project Title', isMultiLine: false },
+    { id: 'projectDescription', label: 'Project Description', isMultiLine: true },
+    { id: 'tableOfContents', label: 'Table of Contents', isMultiLine: true },
+    { id: 'installInstructions', label: 'How to Install and Run the Project', isMultiLine: true },
+    { id: 'howToUse', label: 'How to Use the Project', isMultiLine: true },
+    { id: 'credits', label: 'Include Credits', isMultiLine: true },
+    { id: 'liveProjectLink', label: 'Live Project Link', isMultiLine: false },
+    { id: 'imageUpload', label: 'Upload Image', isMultiLine: false },
+    { id: 'contributorName', label: 'Contributor Name', isMultiLine: false },
+    { id: 'contributorGitHub', label: 'Contributor GitHub Profile', isMultiLine: false },
   ]);
+
   const toggleField = (fieldId) => {
     const updatedFields = formFields.map((field) => {
       if (field.id === fieldId) {
@@ -193,14 +186,25 @@ const page = () => {
           )} */}
         </div>
         {field.isOpen && (
-          <input
-            type="text"
-            id={field.id}
-            name={field.id}
-            value={formData[field.id]}
-            onChange={handleChange}
-            className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500"
-          />
+          field.isMultiLine ? (
+            <textarea
+              id={field.id}
+              name={field.id}
+              value={formData[field.id]}
+              onChange={handleChange}
+              className="mt-1 p-2 border border-gray-300 rounded-md w-full h-40 focus:outline-none focus:border-blue-500"
+              rows="6"
+            />
+          ) : (
+            <input
+              type="text"
+              id={field.id}
+              name={field.id}
+              value={formData[field.id]}
+              onChange={handleChange}
+              className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500"
+            />
+          )
         )}
       </div>
     ));
