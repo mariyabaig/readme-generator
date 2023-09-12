@@ -13,8 +13,7 @@ const page = () => {
     frameworks: '',
     installInstructions: '', // Added for installation instructions
     howToUse: '', // Added for how to use the project
-    contributorName: '', // Added for contributor's name
-    contributorGitHub: '', // Added for contributor's GitHub profile
+    contributors: [],
     imageUpload: null, // Added for image upload (initialize as null)
    
     credits: '', // Added for credits
@@ -29,14 +28,17 @@ const page = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    if (name.startsWith("work")) {
+  
+    if (name.startsWith("contributor")) {
       const [field, index, property] = name.split("-");
-      const updatedWork = [...formData.work];
-      updatedWork[index][property] = value;
+      const updatedContributors = [...formData.contributors];
+      if (!updatedContributors[index]) {
+        updatedContributors[index] = {}; // Initialize if not present
+      }
+      updatedContributors[index][property] = value;
       setFormData({
         ...formData,
-        work: updatedWork,
+        contributors: updatedContributors,
       });
     } else {
       setFormData({
@@ -45,6 +47,8 @@ const page = () => {
       });
     }
   };
+  
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     // Handle file upload, you can use FormData or any other method to manage the file.
@@ -70,7 +74,7 @@ const page = () => {
 
 
     if (formData.tableOfContents) {
-      markdown += `### Table of Contents (Optional)\n${formData.tableOfContents}\n\n`;
+      markdown += `### Table of Contents\n${formData.tableOfContents}\n\n`;
     }
 
     if (formData.installInstructions) {
@@ -87,10 +91,15 @@ const page = () => {
     if (formData.credits) {
       markdown += `### Include Credits\n${formData.credits}\n\n`;
     }
-    if (formData.contributers) {
-      markdown += `### Include Contributers\n${formData.contributer}\n\n`;
+    if (formData.contributors.length > 0) {
+      markdown += "### Contributors\n\n";
+      formData.contributors.forEach((contributor, index) => {
+        if (contributor.name && contributor.github) {
+          markdown += `${index + 1}. [${contributor.name}](${contributor.github})\n`;
+        }
+      });
+      markdown += "\n";
     }
-
 
     return markdown;
   };
@@ -148,40 +157,54 @@ const page = () => {
               <span className="ml-2 text-blue-500">+</span>
             )}
           </label>
-          {/* {field.isOpen && (
-            <button
-              onClick={() => toggleField(field.id)}
-              className="text-red-500"
-            >
-            -
-            </button>
-          )} */}
         </div>
         {field.isOpen && (
-          field.isMultiLine ? (
-            <textarea
-              id={field.id}
-              name={field.id}
-              value={formData[field.id]}
-              onChange={handleChange}
-              className="mt-1 p-2 border border-gray-300 rounded-md w-full h-40 focus:outline-none focus:border-blue-500"
-              rows="6"
-            />
-          ) : (
-            <input
-              type="text"
-              id={field.id}
-              name={field.id}
-              value={formData[field.id]}
-              onChange={handleChange}
-              className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500"
-            />
-          )
+          <div>
+            {field.id.startsWith("contributor") ? (
+              formData.contributors.map((contributor, index) => (
+                <div key={index}>
+                  <input
+                    type="text"
+                    name={`contributor-${index}-name`}
+                    value={contributor.name || ""}
+                    placeholder="Contributor Name"
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="text"
+                    name={`contributor-${index}-github`}
+                    value={contributor.github || ""}
+                    placeholder="GitHub Profile"
+                    onChange={handleChange}
+                  />
+                </div>
+              ))
+            ) : field.isMultiLine ? (
+              <textarea
+                id={field.id}
+                name={field.id}
+                value={formData[field.id]}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full h-40 focus:outline-none focus:border-blue-500"
+                rows="6"
+              />
+            ) : (
+              <input
+                type="text"
+                id={field.id}
+                name={field.id}
+                value={formData[field.id]}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500"
+              />
+            )}
+          </div>
         )}
       </div>
     ));
   };
-
+  
+  
   const renderMarkdownEditor = () => {
     if (showMarkdownEditor) {
       return (
@@ -209,7 +232,7 @@ const page = () => {
 
   return (
     <div className="p-4 flex ">
-      <div className="text-center bg-red-400 mx-12">
+      <div className="text-centermx-12">
         <form onSubmit={handleSubmit}>
           {renderFormFields()}
           <button
@@ -223,7 +246,7 @@ const page = () => {
 
       <button
         onClick={toggleMarkdownEditor}
-        className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+        className="py-2 px-4 rounded-md"
       >
         {showMarkdownEditor
           ? "Hide Markdown and Preview"
