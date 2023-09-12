@@ -5,19 +5,23 @@ import MDEditor from "@uiw/react-md-editor";
 
 const page = () => {
   const [formData, setFormData] = useState({
-    title: "",
-    subtitle: "",
-    work: [
-      { projectName: "", projectLink: "" },
-      { projectName: "", projectLink: "" },
-      { projectName: "", projectLink: "" },
-    ],
-    frameworks: "",
-    contactEmail: "",
-    portfolioLink: "",
-    aboutMe: "",
-    resumeLink: "",
-    funnyStatement: "",
+    projectTitle: '', // Added for project's title
+    subtitle: '',
+    liveProjectLink: '', // Added for live project link
+    projectDescription: '', // Added for project description
+    tableOfContents: '', // Added for table of contents
+    frameworks: '',
+    installInstructions: '', // Added for installation instructions
+    howToUse: '', // Added for how to use the project
+    contributorName: '', // Added for contributor's name
+    contributorGitHub: '', // Added for contributor's GitHub profile
+    imageUpload: null, // Added for image upload (initialize as null)
+   
+    credits: '', // Added for credits
+
+
+
+    
   });
   const [showMarkdownEditor, setShowMarkdownEditor] = useState(false);
 
@@ -47,53 +51,23 @@ const page = () => {
   };
 
   const generateMarkdown = () => {
-    let markdown = `# ${formData.title}\n\n`;
+    let markdown = `# ${formData.projectTitle}\n\n`;
+
+    markdown += `### \n${formData.projectTitle}\n\n`;
     markdown += `## ${formData.subtitle}\n\n`;
-
-    markdown += "### Work\n";
-    formData.work.forEach((workItem, index) => {
-      if (workItem.projectName && workItem.projectLink) {
-        markdown += `- **Project Name ${index + 1}:** ${
-          workItem.projectName
-        }\n`;
-        markdown += `  - **Project Link:** ${workItem.projectLink}\n`;
-      }
-    });
-
-    if (formData.frameworks) {
-      markdown += `### Frameworks, courses etc.\n${formData.frameworks}\n\n`;
-    }
-
-    if (formData.contactEmail) {
-      markdown += `### Got something to say? Contact me at\n${formData.contactEmail}\n\n`;
-    }
-
-    if (formData.portfolioLink) {
-      markdown += `### Portfolio Link\n[${formData.portfolioLink}](${formData.portfolioLink})\n\n`;
-    }
-
-    if (formData.aboutMe) {
-      markdown += `### About Me\n${formData.aboutMe}\n\n`;
-    }
-
-    if (formData.resumeLink) {
-      markdown += `### Resume Link\n[${formData.resumeLink}](${formData.resumeLink})\n\n`;
-    }
-    if (formData.contributorName && formData.contributorGitHub) {
-      markdown += `## Contributors\n\n- [${formData.contributorName}](${formData.contributorGitHub})\n\n`;
-    }
-    if (formData.funnyStatement) {
-      markdown += `### Funny Statement\n${formData.funnyStatement}\n\n`;
-    }
-
-    // New fields
-    if (formData.projectTitle) {
-      markdown += `### Project's Title\n${formData.projectTitle}\n\n`;
-    }
 
     if (formData.projectDescription) {
       markdown += `### Project Description\n${formData.projectDescription}\n\n`;
     }
+    if (formData.frameworks) {
+      markdown += `### Frameworks, courses etc.\n${formData.frameworks}\n\n`;
+    }
+
+
+    if (formData.liveProjectLink) {
+      markdown += `### Live Project Link\n[${formData.liveProjectLink}](${formData.liveProjectLink})\n\n`;
+    }
+
 
     if (formData.tableOfContents) {
       markdown += `### Table of Contents (Optional)\n${formData.tableOfContents}\n\n`;
@@ -116,9 +90,7 @@ const page = () => {
     if (formData.contributers) {
       markdown += `### Include Contributers\n${formData.contributer}\n\n`;
     }
-    if (formData.liveProjectLink) {
-      markdown += `### Live Project Link\n[${formData.liveProjectLink}](${formData.liveProjectLink})\n\n`;
-    }
+
 
     return markdown;
   };
